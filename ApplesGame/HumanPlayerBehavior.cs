@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-  internal class HumanPlayerBehavior : IPlayerBehavior
+  public class HumanPlayerBehavior : IPlayerBehavior
 {
     public PlayedApple PlayCard(List<string> hand, int playerId)
     {

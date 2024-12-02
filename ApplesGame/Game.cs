@@ -77,7 +77,7 @@ namespace ApplesGame
 
             while (!gameFinished)
             {
-                var judge = players[currentJudgeIndex];
+                var judge = GetRandomeJudge.getRandomPlayerAsJudge(players, currentJudgeIndex);
 
                 Console.WriteLine("\n*****************************************************");
                 if (judge.Id == 3)

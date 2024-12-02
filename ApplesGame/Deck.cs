@@ -11,6 +11,11 @@ namespace ApplesGame
         private readonly List<T> cards;
         private readonly Random random = new();
 
+        public int getCardsNumber()
+        {
+            return cards.Count;
+        }
+
         public Deck(IEnumerable<T> items)
         {
             cards = new List<T>(items);

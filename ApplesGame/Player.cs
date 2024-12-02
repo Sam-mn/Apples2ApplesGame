@@ -11,7 +11,7 @@ namespace ApplesGame
         public int Id { get; }
         public List<string> Hand { get; private set; }
         public List<string> GreenApples { get; private set; }
-        public int Score => GreenApples.Count;
+        public virtual int Score => GreenApples.Count;
 
         private readonly IPlayerBehavior behavior;
 
