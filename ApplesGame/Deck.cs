@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-    public class Deck<T>
+    public class Deck<T> : IDeck<T>
     {
         private readonly List<T> cards;
         private readonly Random random = new();

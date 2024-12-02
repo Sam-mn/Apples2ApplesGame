@@ -21,7 +21,7 @@ namespace ApplesGame
         public PlayedApple JudgeCards(List<PlayedApple> submissions)
         {
             // Bot selects the first submission as the winner
-            return submissions[0];
+            return submissions[random.Next(submissions.Count)];
         }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-    public class GameEngine : ISubject
+    public class Game : ISubject
     {
         private readonly List<Player> players = new();
         private Deck<string> greenAppleDeck;
@@ -14,7 +14,7 @@ namespace ApplesGame
         private int currentJudgeIndex = 0;
         private readonly IGameRules rules;
         private readonly List<IGameObserver> gameObservers = new List<IGameObserver>();
-        public GameEngine(IGameRules rules)
+        public Game(IGameRules rules)
         {
             this.rules = rules;
         }
@@ -51,7 +51,7 @@ namespace ApplesGame
             for (int i = 0; i < 3; i++)
             {
                 players.Add(PlayerFactory.CreatePlayer(i, isBot: true));
-                
+
             }
 
             // Add one human player
@@ -65,7 +65,7 @@ namespace ApplesGame
 
         public override void NotifyObservers(string message)
         {
-            foreach(var observer in gameObservers)
+            foreach (var observer in gameObservers)
             {
                 observer.Update(message);
             }
@@ -77,31 +77,55 @@ namespace ApplesGame
 
             while (!gameFinished)
             {
-                Console.WriteLine("\n===== NEW ROUND =====\n");
-                           Player judge = players[currentJudgeIndex];
+                var judge = players[currentJudgeIndex];
+
+                Console.WriteLine("\n*****************************************************");
+                if (judge.Id == 3)
+                {
+                    Console.WriteLine("** NEW ROUND - JUDGE **");
+                }
+                else
+                {
+                    Console.WriteLine("** NEW ROUND **");
+                }
+                Console.WriteLine("*****************************************************");
+
                 Console.WriteLine($"Player {judge.Id} is the judge for this round.\n");
 
                 // Draw a green apple
-                string greenApple = greenAppleDeck.Draw();
-                Console.WriteLine($"Green Apple: {greenApple}");
+                var greenApple = greenAppleDeck.Draw();
+                Console.WriteLine($"==== Green Apple: {greenApple} ====\n");
 
                 // Players submit their red apples
-                var submissions = GetPlayerSubmissions(judge);
+                var submissions = new List<PlayedApple>();
+                foreach (var player in players)
+                {
+                    if (player != judge)
+                    {
+                        var submitCommand = new SubmitRedAppleCommand(player, submissions);
+                        submitCommand.Execute();
+                    }
+                }
+
+                if (players[players.Count - 1] != judge)
+                {
+                    var revealCommand = new RevealSubmissionsCommand(submissions);
+                    revealCommand.Execute();
+                }
 
                 // Judge selects a winner
-                var winner = JudgeWinner(judge, submissions, greenApple);
-                string winnerstring = ($"Player ({winner.PlayerId}) won with: {winner.RedApple}");
-                Console.WriteLine("\n=============================================");
-                Console.WriteLine( winnerstring);
-                Console.WriteLine("=============================================\n");
-                // Award the green apple
-                players[winner.PlayerId].AddPoint(greenApple);
+                var judgeCommand = new JudgeCardsCommand(judge, submissions, winner =>
+                {
+                    players[winner.PlayerId].AddPoint(greenApple);
+                });
+                judgeCommand.Execute();
 
                 // Check if the game is won
                 gameFinished = rules.CheckIfGameWon(players);
 
                 // Replenish hands
-                ReplenishHands();
+                var replenishCommand = new ReplenishHandsCommand(players, redAppleDeck);
+                replenishCommand.Execute();
 
                 // Rotate judge
                 currentJudgeIndex = (currentJudgeIndex + 1) % players.Count;
@@ -157,8 +181,5 @@ namespace ApplesGame
             //}
             Console.WriteLine($"\nGame Over! Winner is Player {winner.Id} with {winner.Score} green apples.");
         }
-
-
     }
 }
- 
