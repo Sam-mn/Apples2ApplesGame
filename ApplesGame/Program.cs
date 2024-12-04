@@ -12,7 +12,7 @@
 
                 var gameRoules = new DefaultGameRules();
                 var game = Game.GetInstance(gameRoules);
-                game.Start();
+                Client.start(game);
             }
             catch (Exception e)
             {

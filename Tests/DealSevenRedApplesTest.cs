@@ -16,13 +16,13 @@ namespace Tests
             var players = new List<Player>
         {
             new HumanPlayerBehavior (0),
-            new BotPlayerBehavior (1), 
+            new BotPlayerBehavior (1),
             new BotPlayerBehavior (2)
         };
 
             var redAppleCards = new List<string>(File.ReadAllLines("./redApples.txt"));
 
-            var redAppleDeck = Deck<string>.GetDeckInstance(redAppleCards);
+            var redAppleDeck = new Deck<string>(redAppleCards);
 
             foreach (var player in players)
             {
