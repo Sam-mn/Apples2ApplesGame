@@ -9,11 +9,6 @@ namespace Tests
 {
     public class PlayerTest
     {
-        private static IPlayerBehavior GetPrivateBehavior(Player player)
-        {
-            var behaviorField = typeof(Player).GetField("behavior", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            return (IPlayerBehavior)behaviorField.GetValue(player);
-        }
 
         [Fact]
         public void TestPlayerIsNotNull()
@@ -35,7 +30,7 @@ namespace Tests
             // Assert
             Assert.NotNull(player); // Player should not be null
             Assert.Equal(playerId, player.Id); // Player ID should match
-            Assert.IsType<HumanPlayerBehavior>(GetPrivateBehavior(player));
+            Assert.IsType<HumanPlayerBehavior>(player);
         }
 
         [Fact]
@@ -51,7 +46,7 @@ namespace Tests
             // Assert
             Assert.NotNull(player); // Player should not be null
             Assert.Equal(playerId, player.Id); // Player ID should match
-            Assert.IsType<BotPlayerBehavior>(GetPrivateBehavior(player));
+            Assert.IsType<BotPlayerBehavior>(player);
         }
     }
 }

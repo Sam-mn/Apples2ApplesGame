@@ -82,7 +82,7 @@ namespace Tests
         // Helper method to create a mock Player object
         private Player CreateMockPlayer(int id, int score)
         {
-            var mockPlayer = new Mock<Player>(id, new HumanPlayerBehavior()); // Mocked Player object
+            var mockPlayer = new Mock<HumanPlayerBehavior>(id); // Mocked Player object
             mockPlayer.Setup(p => p.Score).Returns(score); // Simulate the player's score
             return mockPlayer.Object;
         }

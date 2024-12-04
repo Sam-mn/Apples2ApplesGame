@@ -10,8 +10,7 @@ namespace ApplesGame
     {
         public static Player CreatePlayer(int id, bool isBot)
         {
-            IPlayerBehavior behavior = isBot ? new BotPlayerBehavior() : new HumanPlayerBehavior();
-            return new Player(id, behavior);
+            return isBot ? new BotPlayerBehavior(id) : new HumanPlayerBehavior(id);
         }
     }
 }

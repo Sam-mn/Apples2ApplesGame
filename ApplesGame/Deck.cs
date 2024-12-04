@@ -6,20 +6,30 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-    public class Deck<T> : IDeck<T>
+    public sealed class Deck<T> : IDeck<T>
     {
         private readonly List<T> cards;
         private readonly Random random = new();
+        private static Deck<T> _DeckInstance;
+
+        private Deck(IEnumerable<T> items)
+        {
+            cards = new List<T>(items);
+            Shuffle();
+        }
+
+        public static Deck<T> GetDeckInstance(IEnumerable<T> items)
+        {
+            if (_DeckInstance == null)
+            {
+                _DeckInstance = new Deck<T>(items);
+            }
+            return _DeckInstance;
+        }
 
         public int getCardsNumber()
         {
             return cards.Count;
-        }
-
-        public Deck(IEnumerable<T> items)
-        {
-            cards = new List<T>(items);
-            Shuffle();
         }
 
         public void Shuffle()

@@ -6,80 +6,85 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-  public class HumanPlayerBehavior : IPlayerBehavior
-{
-    public PlayedApple PlayCard(List<string> hand, int playerId)
+    public class HumanPlayerBehavior : Player
     {
-        Console.WriteLine($"Player {playerId}, choose a red apple to play:");
-        for (int i = 0; i < hand.Count; i++)
+        public HumanPlayerBehavior(int id) : base(id)
         {
-            Console.WriteLine($"[{i}] {hand[i]}");
         }
 
-        int choice;
-        while (true)
+        public override PlayedApple PlayCard()
         {
-            try
+            Console.WriteLine($"Player {this.Id}, choose a red apple to play:");
+            for (int i = 0; i < this.Hand.Count; i++)
             {
-                Console.Write("Enter your choice: ");
-                var input = Console.ReadLine();
-
-                // Check if input is numeric
-                if (!int.TryParse(input, out choice))
-                    throw new ArgumentException(ErrorMessages.Get("InvalidInput"));
-
-                // Check if input is in range
-                if (choice < 0 || choice >= hand.Count)
-                    throw new ArgumentOutOfRangeException(ErrorMessages.Get("OutOfRange"));
-
-                break; // Valid input, exit loop
+                Console.WriteLine($"[{i}] {this.Hand[i]}");
             }
-            catch (Exception ex)
+
+            int choice;
+            while (true)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                try
+                {
+                    Console.Write("Enter your choice: ");
+                    var input = Console.ReadLine();
+
+                    // Check if input is numeric
+                    if (!int.TryParse(input, out choice))
+                        throw new ArgumentException(ErrorMessages.Get("InvalidInput"));
+
+                    // Check if input is in range
+                    if (choice < 0 || choice >= this.Hand.Count)
+                        throw new ArgumentOutOfRangeException(ErrorMessages.Get("OutOfRange"));
+
+                    break; // Valid input, exit loop
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
             }
+
+            var selectedCard = this.Hand[choice];
+            this.Hand.RemoveAt(choice);
+
+            return new PlayedApple(this.Id, selectedCard);
         }
 
-        var selectedCard = hand[choice];
-        hand.RemoveAt(choice);
+        public override PlayedApple JudgeCards(List<PlayedApple> submissions)
+        {
+            Console.WriteLine("Judge, select the winning red apple:");
+            for (int i = 0; i < submissions.Count; i++)
+            {
+                Console.WriteLine($"[{i}] {submissions[i].RedApple}");
+            }
 
-        return new PlayedApple(playerId, selectedCard);
+            int choice;
+            while (true)
+            {
+                try
+                {
+                    Console.Write("Enter your choice: ");
+                    var input = Console.ReadLine();
+
+                    // Check if input is numeric
+                    if (!int.TryParse(input, out choice))
+                        throw new ArgumentException(ErrorMessages.Get("InvalidInput"));
+
+                    // Check if input is in range (judge has max 2 options)
+                    if (choice < 0 || choice >= submissions.Count)
+                        throw new ArgumentOutOfRangeException(ErrorMessages.Get("OutOfRange"));
+
+                    break; // Valid input, exit loop
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                }
+            }
+
+            return submissions[choice];
+        }
+
     }
-
-    public PlayedApple JudgeCards(List<PlayedApple> submissions)
-    {
-        Console.WriteLine("Judge, select the winning red apple:");
-        for (int i = 0; i < submissions.Count; i++)
-        {
-            Console.WriteLine($"[{i}] {submissions[i].RedApple}");
-        }
-
-        int choice;
-        while (true)
-        {
-            try
-            {
-                Console.Write("Enter your choice: ");
-                var input = Console.ReadLine();
-
-                // Check if input is numeric
-                if (!int.TryParse(input, out choice))
-                    throw new ArgumentException(ErrorMessages.Get("InvalidInput"));
-
-                // Check if input is in range (judge has max 2 options)
-                if (choice < 0 || choice >= submissions.Count)
-                    throw new ArgumentOutOfRangeException(ErrorMessages.Get("OutOfRange"));
-
-                break; // Valid input, exit loop
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-        }
-
-        return submissions[choice];
-    }
-}
 
 }

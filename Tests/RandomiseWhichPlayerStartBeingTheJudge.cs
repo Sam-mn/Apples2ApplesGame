@@ -15,9 +15,9 @@ namespace Tests
             // Arrange
             var players = new List<Player>
         {
-            new Player(0, new HumanPlayerBehavior()),
-            new Player(1, new BotPlayerBehavior()),
-            new Player(2, new BotPlayerBehavior())
+            new HumanPlayerBehavior(0),
+            new BotPlayerBehavior (1),
+            new BotPlayerBehavior (2)
         };
 
             var currentJudgeIndex = new Random().Next(players.Count);

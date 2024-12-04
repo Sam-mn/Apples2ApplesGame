@@ -11,7 +11,7 @@
 
 
                 var gameRoules = new DefaultGameRules();
-                var game = new Game(gameRoules);
+                var game = Game.GetInstance(gameRoules);
                 game.Start();
             }
             catch (Exception e)

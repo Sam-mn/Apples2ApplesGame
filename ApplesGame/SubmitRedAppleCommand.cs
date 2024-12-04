@@ -19,7 +19,7 @@ namespace ApplesGame
 
         public void Execute()
         {
-            var playedApple = player.PlayRedApple();
+            var playedApple = player.PlayCard();
             submissions.Add(playedApple);
         }
     }

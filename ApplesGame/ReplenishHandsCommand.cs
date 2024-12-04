@@ -26,7 +26,6 @@ namespace ApplesGame
                     var cardsToDraw = 7 - player.Hand.Count;
                     var newCards = redAppleDeck.DrawMultiple(cardsToDraw);
                     player.DrawCards(newCards);
-                    //Console.WriteLine($"Player {player.Id} replenished hand with {cardsToDraw} cards.");
                 }
             }
         }

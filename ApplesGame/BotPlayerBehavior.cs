@@ -6,19 +6,24 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-    public class BotPlayerBehavior : IPlayerBehavior
+    public class BotPlayerBehavior : Player
     {
-        private readonly Random random = new();
-
-        public PlayedApple PlayCard(List<string> hand, int playerId)
+        public BotPlayerBehavior(int id) : base(id)
         {
-            string selectedCard = hand[random.Next(hand.Count)];
-            hand.Remove(selectedCard);
-
-            return new PlayedApple(playerId, selectedCard);
         }
 
-        public PlayedApple JudgeCards(List<PlayedApple> submissions)
+        private readonly Random random = new();
+
+
+        public override PlayedApple PlayCard()
+        {
+            string selectedCard = this.Hand[random.Next(this.Hand.Count)];
+            this.Hand.Remove(selectedCard);
+
+            return new PlayedApple(this.Id, selectedCard);
+        }
+
+        public override PlayedApple JudgeCards(List<PlayedApple> submissions)
         {
             // Bot selects the first submission as the winner
             return submissions[random.Next(submissions.Count)];

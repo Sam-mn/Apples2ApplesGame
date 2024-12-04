@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ApplesGame
 {
-    public class Game : ISubject
+    public sealed class Game : ISubject
     {
         private readonly List<Player> players = new();
         private Deck<string> greenAppleDeck;
@@ -14,9 +14,19 @@ namespace ApplesGame
         private int currentJudgeIndex = 0;
         private readonly IGameRules rules;
         private readonly List<IGameObserver> gameObservers = new List<IGameObserver>();
-        public Game(IGameRules rules)
+        private static Game _instance;
+        private Game(IGameRules rules)
         {
             this.rules = rules;
+        }
+
+        public static Game GetInstance(IGameRules rules)
+        {
+            if (_instance == null)
+            {
+                _instance = new Game(rules);
+            }
+            return _instance;
         }
 
         public void Start()
@@ -28,8 +38,8 @@ namespace ApplesGame
         private void InitializeGame()
         {
             // Load and shuffle decks
-            greenAppleDeck = new Deck<string>(File.ReadAllLines("./greenApples.txt"));
-            redAppleDeck = new Deck<string>(File.ReadAllLines("./redApples.txt"));
+            greenAppleDeck = Deck<string>.GetDeckInstance(File.ReadAllLines("./greenApples.txt"));
+            redAppleDeck = Deck<string>.GetDeckInstance(File.ReadAllLines("./redApples.txt"));
 
             // Add players
             AddPlayers();
@@ -142,7 +152,7 @@ namespace ApplesGame
             {
                 if (player != judge)
                 {
-                    submissions.Add(player.PlayRedApple());
+                    submissions.Add(player.PlayCard());
                 }
             }
 
