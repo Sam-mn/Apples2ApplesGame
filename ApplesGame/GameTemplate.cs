@@ -48,21 +48,9 @@ namespace ApplesGame
         protected abstract void PlayRound();
         protected abstract void RotateJudge();
         protected abstract void AnnounceWinner();
-
-        protected void DealInitialCards()
-        {
-            foreach (var player in players)
-            {
-                player.DrawCards(redAppleDeck.DrawMultiple(7));
-            }
-        }
-
-        protected void RandomizeJudge()
-        {
-            currentJudgeIndex = random.Next(players.Count);
-        }
-
-        protected Player GetCurrentJudge() => players[currentJudgeIndex];
+        protected abstract void DealInitialCards();
+        protected abstract void RandomizeJudge();
+        protected abstract Player GetCurrentJudge();
     }
 }
 

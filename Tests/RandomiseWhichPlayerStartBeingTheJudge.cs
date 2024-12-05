@@ -27,7 +27,7 @@ namespace Tests
             var judgeIndex = players[currentJudgeIndex].Id;
 
             // Assert
-            Assert.InRange(judgeIndex, 0, players.Count - 1); //
+            Assert.InRange(judgeIndex, 0, players.Count - 1); 
         }
     }
 }

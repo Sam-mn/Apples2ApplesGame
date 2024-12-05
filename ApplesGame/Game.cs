@@ -10,34 +10,33 @@ namespace ApplesGame
     public sealed class Game : GameTemplate
     {
         private static Game _instance;
-        private Game(IGameRules rules) : base(rules) { }
+        private readonly IDeckManager<string> deckManager;
+        private readonly IJudgeManager judgeManager;
+        private readonly IRoundManager roundManager;
+        private readonly IPlayersManager playersManager;
 
-        public static Game GetInstance(IGameRules rules)
+        private Game(IGameRules rules, IDeckManager<string> deckManager, IJudgeManager judgeManager, IRoundManager roundManager, IPlayersManager playersManager)
+           : base(rules)
         {
-            if (_instance == null)
-            {
-                _instance = new Game(rules);
-            }
-            return _instance;
+            this.deckManager = deckManager;
+            this.judgeManager = judgeManager;
+            this.roundManager = roundManager;
+            this.playersManager = playersManager;
+        }
+
+        public static Game GetInstance(IGameRules rules, IDeckManager<string> deckManager, IJudgeManager judgeManager, IRoundManager roundManager, IPlayersManager playersManager)
+        {
+            return _instance ??= new Game(rules, deckManager, judgeManager, roundManager, playersManager);
         }
 
         protected override void LoadDecks()
         {
-            greenAppleDeck = new Deck<string>(File.ReadAllLines("./greenApples.txt"));
-            redAppleDeck = new Deck<string>(File.ReadAllLines("./redApples.txt"));
+            greenAppleDeck = deckManager.LoadDeck("./greenApples.txt");
+            redAppleDeck = deckManager.LoadDeck("./redApples.txt");
         }
 
-        protected override void AddPlayers()
-        {
-            // Add bots
-            for (int i = 0; i < 3; i++)
-            {
-                players.Add(PlayerFactory.CreatePlayer(i, isBot: true));
-            }
+        protected override void AddPlayers() => players.AddRange(playersManager.AddPlayer());
 
-            // Add human player
-            players.Add(PlayerFactory.CreatePlayer(players.Count, isBot: false));
-        }
 
         protected override bool IsGameOver() => rules.CheckIfGameWon(players);
 
@@ -55,9 +54,7 @@ namespace ApplesGame
             Console.WriteLine($"==== Green Apple: {greenApple} ====\n");
 
             // Players submit red apples
-            var submissions = GetPlayerSubmissions(judge);
-
-
+            var submissions = roundManager.GetSubmissions(players, judge);
 
             // Judge selects a winner
             var judgeCommand = new JudgeCardsCommand(judge, submissions, winner =>
@@ -73,12 +70,21 @@ namespace ApplesGame
             }
 
             // Replenish cards
-            ReplenishHands();
+            roundManager.ReplenishHands(players, redAppleDeck);
         }
 
         protected override void RotateJudge()
         {
-            currentJudgeIndex = (currentJudgeIndex + 1) % players.Count;
+            currentJudgeIndex = judgeManager.RotateJudge(players, currentJudgeIndex);
+        }
+
+        protected override void RandomizeJudge() 
+        {
+            currentJudgeIndex = judgeManager.RandomizeJudge(players);
+        }
+        protected override Player GetCurrentJudge()
+        {
+             return judgeManager.GetCurrentJudge(players, currentJudgeIndex);
         }
 
         protected override void AnnounceWinner()
@@ -87,40 +93,6 @@ namespace ApplesGame
             Console.WriteLine($"\nGame Over! Winner is Player {winner.Id} with {winner.Score} green apples.");
         }
 
-        private List<PlayedApple> GetPlayerSubmissions(Player judge)
-        {
-            var submissions = new List<PlayedApple>();
-            foreach (var player in players)
-            {
-                if (player != judge)
-                {
-                    var submitCommand = new SubmitRedAppleCommand(player, submissions);
-                    submitCommand.Execute();
-                }
-            }
-
-            return submissions.OrderBy(_ => Guid.NewGuid()).ToList();
-        }
-
-        private PlayedApple JudgeWinner(Player judge, List<PlayedApple> submissions)
-        {
-            if (judge.Id != players.Count - 1)
-            {
-                Console.WriteLine("\nSubmissions:");
-                for (int i = 0; i < submissions.Count; i++)
-                {
-                    Console.WriteLine($"[{i}] {submissions[i].RedApple}");
-                }
-            }
-
-            return judge.JudgeCards(submissions);
-        }
-
-        // Replenish hands
-        private void ReplenishHands()
-        {
-            var replenishCommand = new ReplenishHandsCommand(players, redAppleDeck);
-            replenishCommand.Execute();
-        }
+        protected override void DealInitialCards() => playersManager.DealInitialCards(players, redAppleDeck);
     }
 }

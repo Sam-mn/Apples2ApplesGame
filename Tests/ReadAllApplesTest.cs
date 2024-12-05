@@ -37,10 +37,10 @@ namespace Tests
         public void Read_All_Red_Apples()
         {
             // Act
-            var greenApples = new Deck<string>(File.ReadAllLines("./redApples.txt"));
+            var redApples = new Deck<string>(File.ReadAllLines("./redApples.txt"));
 
             // Assert
-            Assert.Equal(1826, greenApples.getCardsNumber());
+            Assert.Equal(1826, redApples.getCardsNumber());
         }
     }
 }

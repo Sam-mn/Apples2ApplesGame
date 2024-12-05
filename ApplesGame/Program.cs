@@ -10,8 +10,13 @@
                 ErrorMessages.Load("redApples.txt");
 
 
-                var gameRoules = new DefaultGameRules();
-                var game = Game.GetInstance(gameRoules);
+                var gameRules = new DefaultGameRules();
+                IDeckManager<string> deckManager = new DeckManager();
+                IJudgeManager judgeManager = new JudgeManager();
+                IRoundManager roundManager = new RoundManager();
+                IPlayersManager addPlayersManager = new PlayersManager(1, 3);
+
+                var game = Game.GetInstance(gameRules, deckManager, judgeManager, roundManager, addPlayersManager);
                 Client.start(game);
             }
             catch (Exception e)

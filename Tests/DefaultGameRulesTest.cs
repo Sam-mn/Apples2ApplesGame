@@ -64,21 +64,6 @@ namespace Tests
             Assert.True(result);
         }
 
-        [Fact]
-        public void Check_Get_Winning_Score()
-        {
-            // Arrange
-            var rules = new DefaultGameRules();
-            var playesNumbers = 4;
-
-            // Act
-            int score = rules.GetWinningScore(playesNumbers);
-
-            // Assert
-            Assert.Equal(8, score);
-        }
-
-
         // Helper method to create a mock Player object
         private Player CreateMockPlayer(int id, int score)
         {

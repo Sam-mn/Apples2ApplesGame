@@ -11,6 +11,8 @@ namespace ApplesGame
         private readonly Player judge;
         private readonly List<PlayedApple> submissions;
         private readonly Action<PlayedApple> onJudgment;
+        private int? winnerPlayerId = null;
+
 
         public JudgeCardsCommand(Player judge, List<PlayedApple> submissions, Action<PlayedApple> onJudgment)
         {
@@ -23,7 +25,15 @@ namespace ApplesGame
         {
             var winner = judge.JudgeCards(submissions);
             onJudgment(winner);
+            winnerPlayerId = winner.PlayerId;
             Console.WriteLine($"\nJudge Player {judge.Id} selected Player {winner.PlayerId}'s card as the winner.\n");
         }
+
+        public int? GetWinner()
+        {
+            if (winnerPlayerId == null) return null;
+            return winnerPlayerId;
+        }
     }
+
 }
