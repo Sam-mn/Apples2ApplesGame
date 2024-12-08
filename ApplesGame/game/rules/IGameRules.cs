@@ -13,7 +13,7 @@ namespace ApplesGame.gameLogic.rules
         // Check if any of players have 
         bool CheckIfGameWon(IEnumerable<Player> players);
 
-        // Check the number of players and return the number of green apples they must keep to win
+        // Check the number of players and return the number of green apples they must keep to win 
         int GetWinningScore(int playerCount);
     }
 }
