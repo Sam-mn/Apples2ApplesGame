@@ -1,4 +1,11 @@
-﻿namespace ApplesGame
+﻿using ApplesGame.cards;
+using ApplesGame.game;
+using ApplesGame.gameLogic;
+using ApplesGame.gameLogic.rules;
+using ApplesGame.judge;
+using ApplesGame.playersLogic;
+
+namespace ApplesGame
 {
     internal class Program
     {

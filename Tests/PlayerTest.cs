@@ -1,4 +1,4 @@
-﻿using ApplesGame;
+﻿using ApplesGame.playersLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +28,8 @@ namespace Tests
             var player = PlayerFactory.CreatePlayer(playerId, isBot);
 
             // Assert
-            Assert.NotNull(player); // Player should not be null
-            Assert.Equal(playerId, player.Id); // Player ID should match
+            Assert.NotNull(player); 
+            Assert.Equal(playerId, player.Id);
             Assert.IsType<HumanPlayerBehavior>(player);
         }
 
@@ -44,8 +44,8 @@ namespace Tests
             var player = PlayerFactory.CreatePlayer(playerId, isBot);
 
             // Assert
-            Assert.NotNull(player); // Player should not be null
-            Assert.Equal(playerId, player.Id); // Player ID should match
+            Assert.NotNull(player);
+            Assert.Equal(playerId, player.Id);
             Assert.IsType<BotPlayerBehavior>(player);
         }
     }
